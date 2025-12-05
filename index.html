@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <title>AlgaVoltRe Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at top, #0b3b5f, #020617);
+            color: #e5e7eb;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 24px;
+        }
+        .page {
+            width: 100%;
+            max-width: 1100px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        header h1 {
+            font-size: 1.8rem;
+            color: #a5f3fc;
+        }
+        header p {
+            font-size: .9rem;
+            color: #9ca3af;
+        }
+        main {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 800px) {
+            main { grid-template-columns: 1fr; }
+        }
+        .card {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            backdrop-filter: blur(10px);
+        }
+        .card h2 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #f9fafb;
+        }
+        .grid-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .metric {
+            background: radial-gradient(circle at top left, #22c55e20, #020617);
+            border-radius: 12px;
+            padding: 10px 12px;
+            border: 1px solid rgba(55, 65, 81, 0.9);
+        }
+        .metric-label {
+            font-size: .85rem;
+            color: #9ca3af;
+        }
+        .metric-value {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #e5e7eb;
+        }
+        .metric-unit {
+            font-size: .8rem;
+            color: #9ca3af;
+            margin-left: 4px;
+        }
+        .metric-big {
+            margin-top: 12px;
+            background: linear-gradient(135deg, #22c55e40, #0ea5e940);
+            border-radius: 12px;
+            padding: 10px 12px;
+            border: 1px solid rgba(52, 211, 153, 0.7);
+        }
+        .metric-big .metric-label {
+            color: #ecfdf5;
+        }
+        .metric-big .metric-value {
+            font-size: 1.8rem;
+            color: #bbf7d0;
+        }
+        .metric-big .metric-unit {
+            color: #bbf7d0;
+        }
+        .updated-text {
+            margin-top: 6px;
+            font-size: .8rem;
+            color: #9ca3af;
+        }
+        .status-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 9px;
+            border-radius: 999px;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            font-size: .75rem;
+            color: #bbf7d0;
+            margin-top: 4px;
+        }
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background: #22c55e;
+            box-shadow: 0 0 10px #22c55e;
+        }
+        .image-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: radial-gradient(circle at top, #22c55e20, #020617);
+        }
+        .image-card p {
+            font-size: .85rem;
+            color: #d1d5db;
+            margin-top: 4px;
+            margin-bottom: 10px;
+        }
+        .image-placeholder {
+            margin-top: 8px;
+            height: 170px;
+            border-radius: 12px;
+            border: 1px dashed rgba(148, 163, 184, 0.6);
+            background:
+                radial-gradient(circle at 20% 0%, #22c55e30, transparent),
+                radial-gradient(circle at 80% 100%, #0ea5e930, transparent);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-size: .8rem;
+        }
+        .image-placeholder span {
+            font-size: 2rem;
+            margin-bottom: 4px;
+        }
+        .logs-card { grid-column: 1 / -1; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .82rem;
+        }
+        thead {
+            background: rgba(15, 23, 42, 0.9);
+        }
+        th, td {
+            padding: 6px 8px;
+            border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+            text-align: left;
+        }
+        th {
+            color: #9ca3af;
+            font-weight: 500;
+        }
+        tbody tr:nth-child(even) {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        .co2-out-badge {
+            display: inline-flex;
+            padding: 2px 6px;
+            border-radius: 999px;
+            font-size: .75rem;
+            background: rgba(248, 250, 252, 0.08);
+            border: 1px solid rgba(148, 163, 184, 0.6);
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <header>
+        <div>
+            <h1>AlgaVoltRe Carbon Capture Dashboard</h1>
+            <p>Monitoring CO2, kondisi bioreaktor dan total CO2 yang terserap</p>
+        </div>
+        <div class="status-chip">
+            <span class="status-dot"></span>
+            <span id="status-chip-text">Device status</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- Panel utama -->
+        <section class="card">
+            <h2>Realtime Bioreactor Metrics</h2>
+            <div class="grid-metrics">
+                <div class="metric">
+                    <div class="metric-label">CO2 keluar</div>
+                    <div>
+                        <span id="co2-out" class="metric-value">-</span>
+                        <span class="metric-unit">ppm</span>
+                    </div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">pH kultur</div>
+                    <div>
+                        <span id="ph" class="metric-value">-</span>
+                    </div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Intensitas cahaya</div>
+                    <div>
+                        <span id="lux" class="metric-value">-</span>
+                        <span class="metric-unit">lux</span>
+                    </div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Suhu reaktor</div>
+                    <div>
+                        <span id="temp" class="metric-value">-</span>
+                        <span class="metric-unit">°C</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-big">
+                <div class="metric-label">Total CO2 captured</div>
+                <div>
+                    <span id="co2-total-mg" class="metric-value">0.0</span>
+                    <span class="metric-unit">mg</span>
+                </div>
+                <div class="metric-label" style="margin-top:2px;">
+                    Laju penyerapan sekarang:
+                    <span id="co2-rate" style="font-weight:600;">0.0 mg/s</span>
+                </div>
+            </div>
+
+            <p class="updated-text">
+                Update terakhir:
+                <span id="last-update">-</span>
+            </p>
+        </section>
+
+        <!-- Panel gambar / illustrasi -->
+        <section class="card image-card">
+            <div>
+                <h2>Visual AlgaVoltRe</h2>
+                <p>Ilustrasi fotobioreaktor mikroalga yang mengubah CO2 menjadi biomassa dan oksigen.</p>
+            </div>
+            <div class="image-placeholder">
+                <span>🧪</span>
+                <div>Taruh foto alat asli di sini nanti</div>
+            </div>
+        </section>
+
+        <!-- Log data -->
+        <section class="card logs-card">
+            <h2>Log 10 data terakhir</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Waktu</th>
+                    <th>CO2 out (ppm)</th>
+                    <th>pH</th>
+                    <th>Suhu (°C)</th>
+                    <th>CO2 cap (mg)</th>
+                </tr>
+                </thead>
+                <tbody id="logs-body">
+                <tr><td colspan="5">Memuat data dari AlgaVoltRe...</td></tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</div>
+
+<script>
+    // Konfigurasi Firebase dari console
+    const firebaseConfig = {
+        apiKey: "AIzaSyAC18WucCMEvo3j0bD7O4BXAPbKzARlx5Q",
+        authDomain: "algavoltre.firebaseapp.com",
+        databaseURL: "https://algavoltre-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "algavoltre",
+        storageBucket: "algavoltre.firebasestorage.app",
+        messagingSenderId: "873567733208",
+        appId: "1:873567733208:web:a7c47c1de3f4c1e3931ead",
+        measurementId: "G-NPGKYYB8FF"
+    };
+
+    // Kita hanya pakai databaseURL untuk REST API
+    const DB_BASE = firebaseConfig.databaseURL;
+    const DEVICE_ID = "device1";
+
+    const elCo2Out      = document.getElementById("co2-out");
+    const elPh          = document.getElementById("ph");
+    const elLux         = document.getElementById("lux");
+    const elTemp        = document.getElementById("temp");
+    const elCo2TotalMg  = document.getElementById("co2-total-mg");
+    const elCo2Rate     = document.getElementById("co2-rate");
+    const elLastUpdate  = document.getElementById("last-update");
+    const elLogsBody    = document.getElementById("logs-body");
+    const elStatusChip  = document.getElementById("status-chip-text");
+
+    function formatTime(tsSeconds) {
+        if (!tsSeconds) return "-";
+        const d = new Date(tsSeconds * 1000);
+        return d.toLocaleString("id-ID", { hour12: false });
+    }
+
+    async function fetchLatest() {
+        try {
+            const res = await fetch(`${DB_BASE}/algavoltre/${DEVICE_ID}/latest.json`);
+            const data = await res.json();
+            if (!data) return;
+
+            elCo2Out.textContent = data.co2_out != null ? data.co2_out : "-";
+            elPh.textContent     = data.ph != null ? data.ph.toFixed(2) : "-";
+            elLux.textContent    = data.lux != null ? data.lux.toFixed(0) : "-";
+            elTemp.textContent   = data.temp != null ? data.temp.toFixed(2) : "-";
+
+            const totalMg = (data.co2_total_g || 0) * 1000;
+            elCo2TotalMg.textContent = totalMg.toFixed(1);
+
+            const rate = data.co2_rate_mg_s || 0;
+            elCo2Rate.textContent = rate.toFixed(2) + " mg/s";
+
+            elLastUpdate.textContent = formatTime(data.ts);
+
+            elStatusChip.textContent = "Device online";
+        } catch (err) {
+            console.error("Error fetchLatest:", err);
+            elStatusChip.textContent = "Device offline";
+        }
+    }
+
+    async function fetchLogs() {
+        try {
+            const url =
+                `${DB_BASE}/algavoltre/${DEVICE_ID}/logs.json` +
+                `?orderBy=%22ts%22&limitToLast=10`;
+            const res = await fetch(url);
+            const data = await res.json();
+            if (!data) return;
+
+            const rows = Object.values(data).sort((a, b) => b.ts - a.ts);
+
+            elLogsBody.innerHTML = "";
+            for (const row of rows) {
+                const tr = document.createElement("tr");
+
+                const tdTime = document.createElement("td");
+                tdTime.textContent = formatTime(row.ts);
+                tr.appendChild(tdTime);
+
+                const tdCo2 = document.createElement("td");
+                const badge = document.createElement("span");
+                badge.className = "co2-out-badge";
+                badge.textContent = (row.co2_out != null ? row.co2_out : "-") + " ppm";
+                tdCo2.appendChild(badge);
+                tr.appendChild(tdCo2);
+
+                const tdPh = document.createElement("td");
+                tdPh.textContent = row.ph != null ? row.ph.toFixed(2) : "-";
+                tr.appendChild(tdPh);
+
+                const tdTemp = document.createElement("td");
+                tdTemp.textContent = row.temp != null ? row.temp.toFixed(2) : "-";
+                tr.appendChild(tdTemp);
+
+                const tdCap = document.createElement("td");
+                const mg = (row.co2_total_g || 0) * 1000;
+                tdCap.textContent = mg.toFixed(1) + " mg";
+                tr.appendChild(tdCap);
+
+                elLogsBody.appendChild(tr);
+            }
+        } catch (err) {
+            console.error("Error fetchLogs:", err);
+        }
+    }
+
+    async function refreshAll() {
+        await Promise.all([fetchLatest(), fetchLogs()]);
+    }
+
+    refreshAll();
+    setInterval(refreshAll, 5000);
+</script>
+
+</body>
+</html>
