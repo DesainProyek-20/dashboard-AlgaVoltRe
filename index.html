@@ -204,8 +204,13 @@
       gap: 10px;
     }
 
-    .photo-icon {
-      font-size: 40px;
+    .photo-image {
+      max-width: 100%;
+      width: 340px;
+      border-radius: 14px;
+      object-fit: cover;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+      margin-bottom: 10px;
     }
 
     .photo-text {
@@ -348,14 +353,19 @@
           <h2>Visual AlgaVoltRe</h2>
           <p>
             Ilustrasi fotobioreaktor mikroalga yang mengubah CO₂ menjadi biomassa dan oksigen.
-            Panel ini bisa diganti foto alat asli saat alat sudah terpasang di laboratorium / booth.
+            Panel ini diganti dengan foto alat asli saat alat sudah terpasang di laboratorium / booth.
           </p>
 
           <div class="photo-placeholder">
-            <div class="photo-icon">🧪</div>
+            <!-- Ganti nama file di bawah ini sesuai foto yang kamu upload ke repo -->
+            <img
+              src="bioreaktor.jpg"
+              alt="Fotobioreaktor mikroalga AlgaVoltRe"
+              class="photo-image"
+            />
             <div class="photo-text">
-              Taruh foto alat asli di sini nanti.<br />
-              Misalnya: reaktor, susunan LED grow light, atau keseluruhan setup AlgaVoltRe.
+              Fotobioreaktor mikroalga AlgaVoltRe saat uji coba di laboratorium.<br />
+              Menampilkan reaktor, susunan LED, dan setup utama sistem.
             </div>
           </div>
         </div>
@@ -399,7 +409,7 @@
       limitToLast
     } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
 
-    // === Config dari Firebase console (punyamu) ===
+    // === Config dari Firebase console ===
     const firebaseConfig = {
       apiKey: "AIzaSyAC18WucCMEvo3j0bD7O4BXAPbKzARlx5Q",
       authDomain: "algavoltre.firebaseapp.com",
@@ -516,4 +526,5 @@
   </script>
 </body>
 </html>
+
 
