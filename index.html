@@ -287,7 +287,7 @@
       <div>
         <div class="badge">Realtime Microalgae Photobioreactor</div>
         <h1>Dashboard AlgaVoltRe</h1>
-        <p>Memantau CO₂ keluar, kondisi kultur, serta total CO₂ yang berhasil diserap oleh mikroalga.</p>
+        <p>Memantau CO₂ gas masuk, kondisi kultur, serta estimasi total CO₂ yang berhasil diserap oleh mikroalga.</p>
       </div>
     </header>
 
@@ -298,7 +298,7 @@
 
         <div class="metrics-grid">
           <div class="metric-box">
-            <div class="metric-label">CO₂ keluar</div>
+            <div class="metric-label">CO₂ gas masuk (inlet)</div>
             <div class="metric-value">
               <span id="co2-out-value">-</span>
               <span class="metric-unit">ppm</span>
@@ -356,7 +356,6 @@
           </p>
 
           <div class="photo-placeholder">
-            <!-- Ganti nama file di bawah ini sesuai foto yang kamu upload ke repo -->
             <img
               src="bioreaktor.jpg"
               alt="Fotobioreaktor mikroalga AlgaVoltRe"
@@ -378,7 +377,7 @@
         <thead>
           <tr>
             <th>Waktu</th>
-            <th>CO₂ out (ppm)</th>
+            <th>CO₂ inlet (ppm)</th>
             <th>pH</th>
             <th>Suhu (°C)</th>
             <th>CO₂ cap (mg)</th>
@@ -408,7 +407,7 @@
       limitToLast
     } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
 
-    // === Config dari Firebase console ===
+    // Config dari Firebase console
     const firebaseConfig = {
       apiKey: "AIzaSyAC18WucCMEvo3j0bD7O4BXAPbKzARlx5Q",
       authDomain: "algavoltre.firebaseapp.com",
@@ -436,7 +435,7 @@
       }).format(d);
     }
 
-    // ======= Realtime "latest" =======
+    // Realtime "latest"
     const latestRef = ref(db, `algavoltre/${DEVICE_ID}/latest`);
 
     onValue(latestRef, (snapshot) => {
@@ -447,7 +446,8 @@
 
       const d = snapshot.val() || {};
 
-      const co2Out   = d.co2_out ?? d.co2 ?? 0;
+      // pakai co2_in kalau ada, fallback ke co2_out atau co2 lama
+      const co2In    = d.co2_in ?? d.co2_out ?? d.co2 ?? 0;
       const ph       = d.ph ?? 0;
       const lux      = d.lux ?? 0;
       const temp     = d.temp ?? 0;
@@ -463,7 +463,7 @@
       const rateMgS  = d.co2_rate_mg_s ?? 0;
       const ts       = d.ts ?? null;
 
-      $("co2-out-value").textContent = co2Out.toFixed(0);
+      $("co2-out-value").textContent = co2In.toFixed(0);
       $("ph-value").textContent      = ph.toFixed(2);
       $("lux-value").textContent     = lux.toFixed(0);
       $("temp-value").textContent    = temp.toFixed(2);
@@ -472,7 +472,7 @@
       $("last-update").textContent   = formatTimestamp(ts);
     });
 
-    // ======= Log 10 data terakhir =======
+    // Log 10 data terakhir
     const logsRef = query(
       ref(db, `algavoltre/${DEVICE_ID}/logs`),
       limitToLast(10)
@@ -500,7 +500,7 @@
       rows.reverse();
 
       rows.forEach((d) => {
-        const co2Out   = d.co2_out ?? d.co2 ?? 0;
+        const co2In    = d.co2_in ?? d.co2_out ?? d.co2 ?? 0;
         const ph       = d.ph ?? 0;
         const temp     = d.temp ?? 0;
         let totalCO2mg = 0;
@@ -514,7 +514,7 @@
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${formatTimestamp(ts)}</td>
-          <td>${co2Out.toFixed(0)}</td>
+          <td>${co2In.toFixed(0)}</td>
           <td>${ph.toFixed(2)}</td>
           <td>${temp.toFixed(2)}</td>
           <td>${totalCO2mg.toFixed(1)}</td>
